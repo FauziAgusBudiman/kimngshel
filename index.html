@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Selma</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            color: white;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        /* Screens Management */
+        .screen {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: opacity 0.5s ease;
+        }
+
+        .hidden {
+            display: none;
+            opacity: 0;
+        }
+
+        /* Buttons Style */
+        button {
+            padding: 14px 35px;
+            font-size: 18px;
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-weight: 600;
+        }
+
+        #btn-start, #btn22 {
+            background: #ff4f8b;
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 79, 139, 0.4);
+        }
+
+        #btn21 {
+            background: white;
+            color: black;
+        }
+
+        /* Decorations */
+        .heart {
+            position: absolute;
+            color: #ff6b9d;
+            font-size: 20px;
+            z-index: -1;
+            animation: fall 6s linear forwards;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            z-index: 5;
+            animation: fall 4s linear forwards;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Content Styles */
+        .slideshow {
+            margin-top: 20px;
+            width: 280px;
+            height: 380px;
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 5px solid white;
+            box-shadow: 0 10px 30px rgba(255,255,255,0.1);
+        }
+
+        .slideshow img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .slideshow img.active {
+            opacity: 1;
+        }
+
+        .message {
+            max-width: 600px;
+            margin: 20px auto;
+            line-height: 1.8;
+            font-size: 1.1rem;
+            white-space: pre-line;
+            min-height: 150px; /* Biar layout gak lari saat ngetik */
+        }
+
+        h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        h2 { color: #ff4f8b; margin-bottom: 10px; }
+
+        /* Music Control */
+        .music-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 100;
+            font-size: 20px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="music-toggle" onclick="toggleMusic()">🎵</div>
+    <audio id="bgMusic" loop>
+        <source src="back.mpeg" type="audio/mpeg">
+    </audio>
+
+    <div class="screen" id="open">
+        <h1>Hey...</h1>
+        <p>I have something for you</p>
+        <button id="btn-start" onclick="next()">Do you want to know more?</button>
+    </div>
+
+    <div class="screen hidden" id="question">
+        <h1>Happy Birthday to Selma</h1>
+        <p>What's her birthday?</p>
+        <div style="margin-top: 20px;">
+            <button id="btn21">21</button>
+            <button id="btn22">22</button>
+        </div>
+    </div>
+
+    <div class="screen hidden" id="final">
+        <h1>Happy 22nd Birthday</h1>
+        <h2>Selma Tiana Putri ❤️</h2>
+        
+        <div class="slideshow">
+            <img src="foto1.jpeg" class="active">
+            <img src="foto2.jpeg">
+            <img src="foto3.jpeg">
+            <img src="foto4.jpeg">
+            <img src="foto5.jpeg">
+        </div>
+
+        <div class="message" id="typing"></div>
+    </div>
+
+    <script>
+        const music = document.getElementById("bgMusic");
+
+        /* Fungsi kontrol suara */
+        function toggleMusic() {
+            if (music.paused) {
+                music.play();
+            } else {
+                music.pause();
+            }
+        }
+
+        /* Logic Screen */
+        function next() {
+            document.getElementById("open").classList.add("hidden");
+            document.getElementById("question").classList.remove("hidden");
+            
+            // Start Music
+            music.volume = 0.5;
+            music.play().catch(e => console.log("Audio play blocked"));
+        }
+
+        /* Button Game (Tombol 21 makin kecil, 22 makin besar) */
+        let grow = 1;
+        let shrink = 1;
+        const btn21 = document.getElementById("btn21");
+        const btn22 = document.getElementById("btn22");
+
+        btn21.onclick = () => {
+            grow += 0.4;
+            shrink -= 0.15;
+            if (shrink < 0.2) shrink = 0.2;
+            
+            btn22.style.transform = `scale(${grow})`;
+            btn21.style.transform = `scale(${shrink})`;
+        };
+
+        btn22.onclick = () => {
+            document.getElementById("question").classList.add("hidden");
+            document.getElementById("final").classList.remove("hidden");
+            
+            startShow();
+            startTyping();
+            createConfetti();
+            startHearts();
+        };
+
+        /* Efek Mengetik */
+        const textToType = `From the first time we met,
+        I didn't know you would become someone this important in my life.
+
+        You make my days brighter,
+        my laughs louder,
+        and my life happier.
+
+        Happy birthday to the girl who means so much to me.`;
+
+        let charIndex = 0;
+        function startTyping() {
+            const typingElement = document.getElementById("typing");
+            if (charIndex < textToType.length) {
+                typingElement.innerHTML += textToType.charAt(charIndex);
+                charIndex++;
+                setTimeout(startTyping, 50);
+            }
+        }
+
+        /* Slideshow Foto */
+        function startShow() {
+            let slides = document.querySelectorAll(".slideshow img");
+            let currentIndex = 0;
+            
+            setInterval(() => {
+                slides[currentIndex].classList.remove("active");
+                currentIndex = (currentIndex + 1) % slides.length;
+                slides[currentIndex].classList.add("active");
+            }, 3000); // Ganti foto setiap 3 detik
+        }
+
+        /* Hujan Hati */
+        function startHearts() {
+            setInterval(() => {
+                const heart = document.createElement("div");
+                heart.className = "heart";
+                heart.innerHTML = "❤️";
+                heart.style.left = Math.random() * 100 + "vw";
+                heart.style.fontSize = (Math.random() * 20 + 10) + "px";
+                document.body.appendChild(heart);
+                
+                setTimeout(() => heart.remove(), 6000);
+            }, 400);
+        }
+
+        /* Ledakan Confetti */
+        function createConfetti() {
+            for (let i = 0; i < 100; i++) {
+                const c = document.createElement("div");
+                c.className = "confetti";
+                c.style.left = Math.random() * 100 + "vw";
+                c.style.background = `hsl(${Math.random() * 360}, 70%, 60%)`;
+                c.style.animationDelay = Math.random() * 2 + "s";
+                document.body.appendChild(c);
+                
+                setTimeout(() => c.remove(), 4000);
+            }
+        }
+    </script>
+</body>
+</html>
